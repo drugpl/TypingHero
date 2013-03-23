@@ -23,29 +23,29 @@ describe TypingHero::TypingHero do
 
   end
 
-  describe "when player typed a word correctly" do
+  describe "when player entered a word correctly" do
     it "should add points" do
       expect {
-        subject.player_typed_word(player, "dude")
+        subject.player_entered_word(player, "dude")
       }.to change{player.score}.by(1)
     end
 
     it "should draw next word" do
-      subject.player_typed_word(player, "dude")
+      subject.player_entered_word(player, "dude")
       subject.visible_words.should == [bro]
     end
   end
 
-  describe "when player typed a word incorrectly" do
+  describe "when player entered a word incorrectly" do
 
     it "should not add points" do
       expect {
-        subject.player_typed_word(player, "hello")
+        subject.player_entered_word(player, "hello")
       }.not_to change{player.score}
     end
 
     it "should stay with current word" do
-      subject.player_typed_word(player, "hello")
+      subject.player_entered_word(player, "hello")
       subject.visible_words.should == [dude]
     end
 

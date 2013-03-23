@@ -4,28 +4,37 @@ module TypingHero
   class Glue
     include Aquarium::Aspects
 
-    def initialize(typing_hero, gui, time_adapter)
+    def initialize(typing_hero, gui, time_adapter, player)
       @typing_hero = typing_hero
       @gui = gui
       @time_adapter = time_adapter
+      @player = player
     end
 
     def apply
       after(@typing_hero, :start) { @time_adapter.start }
-      after(@typing_hero, :time_unit_elapsed) { @gui.update_words(@typing_hero.visible_words) }
+      after(@typing_hero, :time_unit_elapsed) do
+        @gui.update_words(@typing_hero.visible_words)
+      end
+      after(@typing_hero, :player_correctly_entered_word) do |_, _, player, word|
+        @gui.update_words(@typing_hero.visible_words)
+        @gui.word_correct(word)
+      end
 
       after(@time_adapter, :tick) { @typing_hero.time_unit_elapsed }
+
+      after(@gui, :word_entered) { |_, _, word| @typing_hero.player_entered_word(@player, word) }
     end
 
     private
-    def before(object, method, &block)
-      Aspect.new :before, methods: [method], for_objects: [object] do |*args|
+    def before(object, methods, &block)
+      Aspect.new :before, methods: Array(methods), for_objects: [object] do |*args|
         block.call(args)
       end
     end
 
-    def after(object, method, &block)
-      Aspect.new :after, methods: [method], for_objects: [object] do |*args|
+    def after(object, methods, &block)
+      Aspect.new :after, methods: Array(methods), for_objects: [object] do |*args|
         block.call(args)
       end
     end
