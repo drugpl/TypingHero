@@ -15,9 +15,12 @@ module TypingHero
       def listen(net_adapter)
         Thread.new do
           loop do
-            word_in_json = @socket.gets
-            word = JSON.parse(word_in_json)["word"]
-            net_adapter.word_received(self, word)
+            begin
+              word_in_json = @socket.gets
+              word = JSON.parse(word_in_json)["word"]
+              net_adapter.word_received(self, word)
+            rescue Errno::EPIPE, Errno::ECONNREFUSED
+            end
           end
         end
       end
@@ -61,7 +64,7 @@ module TypingHero
       def puts(message)
         begin
           @socket.puts(message.to_json)
-        rescue Errno::EPIPE
+        rescue Errno::EPIPE, Errno::ECONNREFUSED
         end
       end
 
