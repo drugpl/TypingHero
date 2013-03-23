@@ -13,9 +13,10 @@ module TypingHero
       def run
         loop do
           client = ClientHandler.new(@server.accept)
+          name = client.get_name
           client.listen(self)
           @clients << client
-          client_connected(client)
+          client_connected(name, client)
         end
       end
 
@@ -26,7 +27,7 @@ module TypingHero
       def word_received(client, word)
       end
 
-      def client_connected(client)
+      def client_connected(name, client)
         puts "Client connected"
       end
 
