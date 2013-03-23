@@ -1,14 +1,19 @@
 module TypingHero
   class TypingHero
 
-    attr_reader :visible_words, :available_words
+    attr_reader :visible_words, :available_words, :players
 
     def initialize(available_words)
       @available_words = available_words
       @visible_words = [available_words.shift]
+      @players = []
     end
 
     def start
+    end
+
+    def new_player_joined(name)
+      @players << Player.new(name)
     end
 
     def time_unit_elapsed
@@ -28,6 +33,10 @@ module TypingHero
       visible_words.delete(word)
       visible_words << available_words.shift
       player.add_points(1)
+    end
+
+    def last_player
+      @players.last
     end
 
   end

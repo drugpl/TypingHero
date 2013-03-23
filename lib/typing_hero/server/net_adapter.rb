@@ -12,9 +12,10 @@ module TypingHero
 
       def run
         loop do
-          @clients << ClientHandler.new(@server.accept)
-          @clients.last.listen(self)
-          client_connected
+          client = ClientHandler.new(@server.accept)
+          client.listen(self)
+          @clients << client
+          client_connected(client)
         end
       end
 
@@ -22,10 +23,10 @@ module TypingHero
         @clients.each { |c| c.send_world(words, players) }
       end
 
-      def word_received(word)
+      def word_received(client, word)
       end
 
-      def client_connected
+      def client_connected(client)
         puts "Client connected"
       end
 
