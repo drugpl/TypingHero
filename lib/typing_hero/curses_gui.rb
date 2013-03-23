@@ -9,14 +9,13 @@ module TypingHero
       COLOR_MAGENTA, COLOR_RED, COLOR_WHITE, COLOR_YELLOW
     ]
 
-    COLOR_ERROR = 666
-
     class Job < Struct.new(:delay, :proc); end
 
     def initialize
       @current_text = ""
       @positions = {}
       @colors = {}
+      @scores = {}
       @jobs = []
       @words = WordCollection.new
       @score = 0
@@ -27,6 +26,11 @@ module TypingHero
 
     def update_words(words)
       @words = words
+    end
+
+    def update_scores(scores)
+      @scores = scores
+      notify_scoreboard
     end
 
     def update_score(score)
@@ -41,6 +45,7 @@ module TypingHero
     def word_correct(word)
       @current_text = ''
       @positions.delete(word)
+      notify_textbox
     end
 
     def word_incorrect
@@ -79,6 +84,10 @@ module TypingHero
       @textbox_changed = true
     end
 
+    def notify_scoreboard
+      @scores_changed = true
+    end
+
     def delay(interval, &block)
       @jobs.push Job.new(interval, block)
     end
@@ -106,13 +115,12 @@ module TypingHero
       ].each do |color|
         init_pair(color, color, COLOR_BLACK)
       end
-
-      init_pair(COLOR_ERROR, COLOR_BLACK, COLOR_RED)
     end
 
     def setup_windows
       @stage_width = cols
       @stage_height = lines - 3
+      @scoreboard_width = 22
 
       @stage = Window.new @stage_height, @stage_width, 0, 0
       @stage.timeout = 0
@@ -120,7 +128,11 @@ module TypingHero
       @textbox = Window.new 3, @stage_width, @stage_height, 0
       @textbox.timeout = 0
 
+      @scoreboard = Window.new @stage_height, @scoreboard_width, @stage_height, @stage_width - @scoreboard_width
+      @scoreboard.timeout = 0
+
       notify_textbox
+      notify_scoreboard
     end
 
     def handle_input
@@ -152,21 +164,28 @@ module TypingHero
     def display_windows
       @stage.clear
       arrange_words
-      @stage.refresh
+      @stage.noutrefresh
 
       if @textbox_changed
         @textbox.clear
         @textbox.box '|', '-'
 
-        @textbox.setpos 1, 2
+        @textbox.setpos 1, 3
         @textbox << @current_text
 
-        @textbox.setpos 1, @stage_width - 9
-        @textbox << sprintf('| %5d', @score)
+        @textbox.setpos 1, @stage_width - 8
+        @textbox << sprintf('| %4d', @score)
 
         @textbox.refresh
 
         @textbox_changed = false
+      end
+
+      if @scores_changed
+        @scoreboard.clear
+        @scoreboard.box '|', '-'
+        display_scores
+        @scoreboard.noutrefresh
       end
     end
 
@@ -189,6 +208,13 @@ module TypingHero
         @stage.setpos vertical_position_for(word), horizontal_position_for(word)
         @stage.color_set color_for(word)
         @stage << word.content
+      end
+    end
+
+    def display_scores
+      @scores.each_with_index do |name, player, i|
+        @scoreboard.setpos i+1, 2
+        @scoreboard << sprintf("%#{@scoreboard_width - 9}s %4d", name, player.score)
       end
     end
   end

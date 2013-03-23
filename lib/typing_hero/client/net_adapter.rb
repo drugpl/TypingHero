@@ -21,7 +21,7 @@ module TypingHero
         json = JSON.load(line)
 
         message_received({
-          players: json['players'].map { |p| Player.new(p['name'], p['score']) },
+          players: Hash[json['players'].map { |p| [ p['name'], Player.new(p['name'], p['score']) ] }],
           words: json['words'].map { |w| Word.new(w['content'], w['position']) }
         })
       end

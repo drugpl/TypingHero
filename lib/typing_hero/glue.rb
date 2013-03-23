@@ -19,7 +19,7 @@ module TypingHero
       end
       after(@typing_hero, :player_correctly_entered_word) do |_, _, player, word|
         @gui.update_words(@typing_hero.visible_words)
-        # @gui.word_correct(word)
+        @gui.word_correct(word)
         @gui.update_score(player.score)
       end
 
