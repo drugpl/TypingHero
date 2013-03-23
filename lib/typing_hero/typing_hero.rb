@@ -20,10 +20,14 @@ module TypingHero
     def player_typed_word(player, word)
       found_word = visible_words.detect { |w| w.content == word }
       if found_word
-        visible_words.delete(found_word)
-        visible_words << available_words.shift
-        player.add_points(1)
+        player_correctly_typed_word(player, found_word)
       end
+    end
+
+    def player_correctly_typed_word(player, word)
+      visible_words.delete(word)
+      visible_words << available_words.shift
+      player.add_points(1)
     end
 
   end
