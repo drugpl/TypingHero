@@ -8,7 +8,6 @@ module TypingHero
       end
 
       def listen(net_adapter)
-        puts "LISTENING"
         Thread.new do
           loop do
             word_in_json = @socket.gets
@@ -21,6 +20,15 @@ module TypingHero
       def send_world(words, players)
         world = build_world(words, players).to_json
         @socket.puts(world)
+      end
+
+      def inform_about_correct_word(word)
+        @socket.puts(
+          {
+            :type => "word_correct",
+            :word => word.content
+          }.to_json
+        )
       end
 
       def build_world(words, players)
@@ -37,6 +45,7 @@ module TypingHero
           }
         end
         {
+          :type => "world",
           :words => mapped_words,
           :players => mapped_players
         }

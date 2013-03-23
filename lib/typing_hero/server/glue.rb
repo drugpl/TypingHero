@@ -9,7 +9,7 @@ module TypingHero
         @typing_hero = typing_hero
         @time_adapter = time_adapter
         @net_adapter = net_adapter
-        @players = []
+        @players_handlers = {}
       end
 
       def apply
@@ -17,18 +17,20 @@ module TypingHero
           @time_adapter.start
           @net_adapter.run
         end
-        after(@typing_hero, [:time_unit_elapsed]) do
+        after(@typing_hero, [:time_unit_elapsed, :new_player_joined, :player_correctly_entered_word]) do
           @net_adapter.send_world(@typing_hero.visible_words, @players)
+        end
+
+        after(@typing_hero, :player_correctly_entered_word) do |_, _, player, word|
+          @players_handlers[players_handlers].inform_about_correct_word(word)
         end
 
         after(@time_adapter, :tick) { @typing_hero.time_unit_elapsed }
 
         after(@net_adapter, :word_received) { |_, _, word| @typing_hero.player_entered_word(@player, word) }
-        after(@net_adapter, :client_connected) do
-          puts "GOT CLIENT CONNECT"
-          puts @players.inspect
-          @players << Player.new("dupa")
-          puts @players.inspect
+        after(@net_adapter, :client_connected) do |_, _, handler|
+          @typing_hero.new_player_joined("Player #{rand(10)}")
+          @players_handlers[@typing_hero.last_player] = handler
         end
       end
 
