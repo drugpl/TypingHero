@@ -4,7 +4,7 @@ module TypingHero
   class App
     def initialize
       gui = CursesGui.new
-      typing_hero = TypingHero.new(WORDS)
+      typing_hero = TypingHero.new(WORDS.map { |word| Word.new(word) } )
       time_adapter = TimeAdapter.new(1)
       glue = Glue.new(typing_hero, gui, time_adapter)
 

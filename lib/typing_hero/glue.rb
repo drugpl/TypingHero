@@ -11,16 +11,10 @@ module TypingHero
     end
 
     def apply
-      after @typing_hero, :start do
-        @time_adapter.start
-      end
-      after @typing_hero, :time_unit_elapsed do
-        @gui.update_words(@typing_hero.visible_words)
-      end
+      after(@typing_hero, :start) { @time_adapter.start }
+      after(@typing_hero, :time_unit_elapsed) { @gui.update_words(@typing_hero.visible_words) }
 
-      after @time_adapter, :tick do
-        @typing_hero.time_unit_elapsed
-      end
+      after(@time_adapter, :tick) { @typing_hero.time_unit_elapsed }
     end
 
     private
