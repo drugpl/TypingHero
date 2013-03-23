@@ -20,13 +20,14 @@ module TypingHero
       after(@typing_hero, :player_correctly_entered_word) do |_, _, player, word|
         @gui.update_words(@typing_hero.visible_words)
         @gui.word_correct(word)
+        @gui.update_score(player.score)
       end
 
       after(@time_adapter, :tick) { @typing_hero.time_unit_elapsed }
 
       after(@net_adapter, :word_received) { |_, _, word| @typing_hero.player_entered_word(@player, word) }
 
-      after(@gui, :word_entered) { |_, _, word| @net_adapter.player_entered_word(@player, word) }
+      after(@gui, :word_entered) { |_, _, word| @typing_hero.player_entered_word(@player, word) }
     end
 
     private
