@@ -6,6 +6,7 @@ module TypingHero
 
     def initialize
       @current_text = ""
+      @positions = {}
       @words = WordCollection.new
 
       setup_curses
@@ -21,6 +22,7 @@ module TypingHero
 
     def word_correct(word)
       @current_text = ''
+      @positions.delete(word)
     end
 
     def word_incorrect(word)
@@ -52,12 +54,13 @@ module TypingHero
     end
 
     def setup_windows
+      @stage_width = cols
       @stage_height = lines - 3
 
-      @stage = Window.new @stage_height, cols, 0, 0
+      @stage = Window.new @stage_height, @stage_width, 0, 0
       @stage.timeout = 0
 
-      @textbox = Window.new 3, cols, @stage_height, 0
+      @textbox = Window.new 3, @stage_width, @stage_height, 0
       @textbox.timeout = 0
     end
 
@@ -100,14 +103,17 @@ module TypingHero
 
     ##################################################
 
-    def position_for(word)
-      @positions ||= {}
+    def vertical_position_for(word)
       @positions[word] ||= rand(@stage_height)
+    end
+
+    def horizontal_position_for(word)
+      word.position * (@stage_width - word.content.length)
     end
 
     def arrange_words
       @words.each do |word|
-        @stage.setpos position_for(word), word.x
+        @stage.setpos vertical_position_for(word), horizontal_position_for(word)
         @stage << word.content
       end
     end
