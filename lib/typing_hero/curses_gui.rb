@@ -213,7 +213,7 @@ module TypingHero
 
     def display_scores
       @scores.each_with_index do |val, i|
-        k, v = val
+        name, player = val
         @scoreboard.setpos i+1, 2
         @scoreboard << sprintf("%#{@scoreboard_width - 9}s %4d", name, player.score)
       end
