@@ -78,6 +78,8 @@ module TypingHero
         case char
         when 10 # enter
           word_entered @current_text
+        when 27 # cheat na esc
+          @current_text = ''
         when 127 # backspace
           @current_text = @current_text[0..-2]
         end
