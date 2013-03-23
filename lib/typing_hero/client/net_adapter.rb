@@ -6,6 +6,10 @@ module TypingHero
     class NetAdapter
       def initialize(host, port)
         @socket = TCPSocket.new(host, port)
+        start
+      end
+
+      def start
       end
 
       def run

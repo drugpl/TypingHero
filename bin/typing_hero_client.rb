@@ -1,3 +1,3 @@
 require 'typing_hero'
 
-TypingHero::Client::App.new(ARGV[0] || 'localhost', (ARGV[1] || 3100).to_i)
+TypingHero::Client::App.new(ARGV[0], ARGV[1] || 'localhost', (ARGV[2] || 3100).to_i)

@@ -12,6 +12,10 @@ module TypingHero
       end
 
       def apply
+        after(@net_adapter, :start) do
+          @net_adapter.send_message({player: player.name})
+        end
+
         after(@net_adapter, :message_received) do |_, _, message|
           @gui.update_words(message[:words])
           @gui.update_scores(message[:players])
