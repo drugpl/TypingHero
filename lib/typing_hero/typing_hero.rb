@@ -13,7 +13,7 @@ module TypingHero
 
     def time_unit_elapsed
       visible_words.each do |word|
-        word.x += 1
+        word.increase_position
       end
     end
 

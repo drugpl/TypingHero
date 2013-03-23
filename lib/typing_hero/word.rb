@@ -6,11 +6,13 @@ module TypingHero
 
     attr_reader :content, :position
 
-    def_delegators :position, :x, :x=, :y, :y=
-
-    def initialize(content, position = Position.new(0,0))
+    def initialize(content, position = 0)
       @content = content
       @position = position
+    end
+
+    def increase_position
+      @position += 0.01
     end
 
   end

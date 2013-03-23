@@ -4,9 +4,13 @@ describe TypingHero::Word do
 
   subject { TypingHero::Word.new("hello") }
 
-  its(:position) { should == TypingHero::Position.new(0,0) }
+  its(:position) { should == 0 }
   its(:content) { should == "hello" }
-  its(:x) { should == 0 }
-  its(:y) { should == 0 }
+
+  it "increases position" do
+    expect {
+      subject.increase_position
+    }.to change { subject.position }.by(0.01)
+  end
 
 end

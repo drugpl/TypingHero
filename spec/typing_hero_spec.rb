@@ -18,7 +18,7 @@ describe TypingHero::TypingHero do
     it "moves the words" do
       expect {
         subject.time_unit_elapsed
-      }.to change { dude.x }.by(1)
+      }.to change { dude.position }.by(0.01)
     end
 
   end
