@@ -10,7 +10,7 @@ module TypingHero
 
       def run
         Thread.new do
-          while line = @socket.gets.chomp
+          while line = @socket.gets
             process_message(line)
           end
           @socket.close
