@@ -16,9 +16,14 @@ module TypingHero
       @words = words
     end
 
-    def tick
-      handle_input
-      display_windows
+    def word_entered(word)
+    end
+
+    def word_correct(word)
+      @current_text = ''
+    end
+
+    def word_incorrect(word)
     end
 
     def run!
@@ -69,7 +74,7 @@ module TypingHero
       else
         case char
         when 10 # enter
-          # TODO: confirm
+          word_entered @current_text
         when 127 # backspace
           @current_text = @current_text[0..-2]
         end
@@ -87,6 +92,13 @@ module TypingHero
       @textbox << @current_text
       @textbox.refresh
     end
+
+    def tick
+      handle_input
+      display_windows
+    end
+
+    ##################################################
 
     def position_for(word)
       @positions ||= {}
