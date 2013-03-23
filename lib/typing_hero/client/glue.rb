@@ -13,7 +13,7 @@ module TypingHero
 
       def apply
         after(@net_adapter, :start) do
-          @net_adapter.send_message({player: player.name})
+          @net_adapter.send_message({player: @player.name})
         end
 
         after(@net_adapter, :message_received) do |_, _, message|
