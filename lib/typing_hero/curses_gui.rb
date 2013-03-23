@@ -9,10 +9,15 @@ module TypingHero
       COLOR_MAGENTA, COLOR_RED, COLOR_WHITE, COLOR_YELLOW
     ]
 
+    COLOR_ERROR = 666
+
+    class Job < Struct.new(:delay, :proc); end
+
     def initialize
       @current_text = ""
       @positions = {}
       @colors = {}
+      @jobs = []
       @words = WordCollection.new
       @score = 0
 
@@ -26,9 +31,11 @@ module TypingHero
 
     def update_score(score)
       @score = score
+      notify_textbox
     end
 
     def word_entered(word)
+      notify_textbox
     end
 
     def word_correct(word)
@@ -36,7 +43,14 @@ module TypingHero
       @positions.delete(word)
     end
 
-    def word_incorrect(word)
+    def word_incorrect
+      @textbox.color_set COLOR_RED
+      notify_textbox
+
+      delay(15) do
+        @textbox.bkgd COLOR_WHITE
+        notify_textbox
+      end
     end
 
     def run!
@@ -55,6 +69,29 @@ module TypingHero
 
     private
 
+    def tick
+      handle_input
+      run_delayed_jobs
+      display_windows
+    end
+
+    def notify_textbox
+      @textbox_changed = true
+    end
+
+    def delay(interval, &block)
+      @jobs.push Job.new(interval, block)
+    end
+
+    def run_delayed_jobs
+      @jobs.each do |job|
+        job.delay -= 1
+        job.proc.call if job.delay == 0
+      end
+
+      @jobs.delete_if { |job| job.delay == 0 }
+    end
+
     def setup_curses
       init_screen
       start_color
@@ -69,6 +106,8 @@ module TypingHero
       ].each do |color|
         init_pair(color, color, COLOR_BLACK)
       end
+
+      init_pair(COLOR_ERROR, COLOR_BLACK, COLOR_RED)
     end
 
     def setup_windows
@@ -80,6 +119,8 @@ module TypingHero
 
       @textbox = Window.new 3, @stage_width, @stage_height, 0
       @textbox.timeout = 0
+
+      notify_textbox
     end
 
     def handle_input
@@ -90,7 +131,9 @@ module TypingHero
         when '['
           # Ignore the next characters
           @textbox.getstr
-        else @current_text << char
+        else
+          @current_text << char
+          notify_textbox
         end
       else
         case char
@@ -98,8 +141,10 @@ module TypingHero
           word_entered @current_text
         when 27 # cheat na esc
           @current_text = ''
+          notify_textbox
         when 127 # backspace
           @current_text = @current_text[0..-2]
+          notify_textbox
         end
       end
     end
@@ -109,21 +154,20 @@ module TypingHero
       arrange_words
       @stage.refresh
 
-      @textbox.clear
-      @textbox.box '|', '-'
+      if @textbox_changed
+        @textbox.clear
+        @textbox.box '|', '-'
 
-      @textbox.setpos 1, 2
-      @textbox << @current_text
+        @textbox.setpos 1, 2
+        @textbox << @current_text
 
-      @textbox.setpos 1, @stage_width - 9
-      @textbox << sprintf('| %5d', @score)
+        @textbox.setpos 1, @stage_width - 9
+        @textbox << sprintf('| %5d', @score)
 
-      @textbox.refresh
-    end
+        @textbox.refresh
 
-    def tick
-      handle_input
-      display_windows
+        @textbox_changed = false
+      end
     end
 
     ##################################################
