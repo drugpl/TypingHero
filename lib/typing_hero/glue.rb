@@ -4,10 +4,11 @@ module TypingHero
   class Glue
     include Aquarium::Aspects
 
-    def initialize(typing_hero, gui, time_adapter, player)
+    def initialize(typing_hero, gui, time_adapter, net_adapter, player)
       @typing_hero = typing_hero
       @gui = gui
       @time_adapter = time_adapter
+      @net_adapter = net_adapter
       @player = player
     end
 
@@ -23,7 +24,9 @@ module TypingHero
 
       after(@time_adapter, :tick) { @typing_hero.time_unit_elapsed }
 
-      after(@gui, :word_entered) { |_, _, word| @typing_hero.player_entered_word(@player, word) }
+      after(@net_adapter, :word_received) { |_, _, word| @typing_hero.player_entered_word(@player, word) }
+
+      after(@gui, :word_entered) { |_, _, word| @net_adapter.player_entered_word(@player, word) }
     end
 
     private
