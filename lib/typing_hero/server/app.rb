@@ -9,7 +9,7 @@ module TypingHero
   module Server
     class App
 
-      def initialize(words, host = "localhost", port = 3100)
+      def initialize(words, host = "0.0.0.0", port = 3100)
         typing_hero = TypingHero.new(words.map { |word| Word.new(word) })
         time_adapter = TimeAdapter.new(0.7)
         net_adapter = NetAdapter.new(host, port)
