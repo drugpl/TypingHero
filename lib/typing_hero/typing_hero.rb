@@ -7,6 +7,7 @@ module TypingHero
       @available_words = available_words
       @visible_words = [available_words.shift]
       @players = []
+      @units_elapsed = 0
     end
 
     def start
@@ -17,8 +18,12 @@ module TypingHero
     end
 
     def time_unit_elapsed
+      @units_elapsed += 1
       visible_words.each do |word|
         word.increase_position
+      end
+      if @units_elapsed % 15 == 0 && visible_words.size < 10 && available_words.any?
+        visible_words << available_words.shift
       end
     end
 
@@ -31,7 +36,7 @@ module TypingHero
 
     def player_correctly_entered_word(player, word)
       visible_words.delete(word)
-      visible_words << available_words.shift
+      visible_words << available_words.shift if available_words.any?
       player.add_points(word.size)
     end
 
