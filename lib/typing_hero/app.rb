@@ -5,7 +5,8 @@ module TypingHero
     def initialize
       gui = CursesGui.new
       typing_hero = TypingHero.new(WORDS)
-      glue = Glue.new(typing_hero, gui)
+      time_adapter = TimeAdapter.new(1)
+      glue = Glue.new(typing_hero, gui, time_adapter)
 
       glue.apply
       typing_hero.start
