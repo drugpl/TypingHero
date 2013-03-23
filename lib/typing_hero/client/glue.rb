@@ -16,10 +16,14 @@ module TypingHero
           @net_adapter.send_message({player: @player.name})
         end
 
-        after(@net_adapter, :message_received) do |_, _, message|
+        after(@net_adapter, :world_updated) do |_, _, message|
           @gui.update_words(message[:words])
           @gui.update_scores(message[:players])
           @gui.update_score(message[:players][@player.name].score)
+        end
+
+        after(@net_adapter, :word_correct) do |_, _, word|
+          @gui.word_correct(word)
         end
 
         after(@gui, :word_entered) do |_, _, word|
