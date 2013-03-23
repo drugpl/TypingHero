@@ -59,7 +59,10 @@ module TypingHero
       end
 
       def puts(message)
-        @socket.puts(message.to_json)
+        begin
+          @socket.puts(message.to_json)
+        rescue Errno::EPIPE
+        end
       end
 
     end
