@@ -7,12 +7,15 @@ module TypingHero
       player = Player.new("john")
       typing_hero = TypingHero.new(WORDS.map { |word| Word.new(word) })
       time_adapter = TimeAdapter.new(speed)
-      glue = Glue.new(typing_hero, gui, time_adapter, player)
+      net_adapter = NetServerAdapter.new(3001)
+      glue = Glue.new(typing_hero, gui, time_adapter, net_adapter, player)
 
       glue.apply
       typing_hero.start
+      net_adapter.run
       gui.run!
     end
   end
 
+  Thread.abort_on_exception = true
 end
