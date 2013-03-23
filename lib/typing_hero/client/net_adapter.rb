@@ -24,17 +24,25 @@ module TypingHero
       def process_message(line)
         json = JSON.load(line)
 
-        message_received({
-          players: Hash[json['players'].map { |p| [ p['name'], Player.new(p['name'], p['score']) ] }],
-          words: json['words'].map { |w| Word.new(w['content'], w['position']) }
-        })
+        case json['type']
+        when 'world'
+          world_updated({
+            players: Hash[json['players'].map { |p| [ p['name'], Player.new(p['name'], p['score']) ] }],
+            words: json['words'].map { |w| Word.new(w['content'], w['position']) }
+          })
+        when 'word_correct'
+          word_correct(json['word'])
+        end
       end
 
       def send_message(message)
         @socket.puts(JSON.dump(message))
       end
 
-      def message_received(message)
+      def world_updated(message)
+      end
+
+      def word_correct(word)
       end
     end
   end

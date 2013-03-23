@@ -125,11 +125,11 @@ module TypingHero
       @stage = Window.new @stage_height, @stage_width, 0, 0
       @stage.timeout = 0
 
+      @scoreboard = Window.new @stage_height, @scoreboard_width, 0, @stage_width - @scoreboard_width
+      @scoreboard.timeout = 0
+
       @textbox = Window.new 3, @stage_width, @stage_height, 0
       @textbox.timeout = 0
-
-      @scoreboard = Window.new @stage_height, @scoreboard_width, @stage_height, @stage_width - @scoreboard_width
-      @scoreboard.timeout = 0
 
       notify_textbox
       notify_scoreboard
@@ -166,6 +166,13 @@ module TypingHero
       arrange_words
       @stage.noutrefresh
 
+      if @scores_changed
+        @scoreboard.clear
+        @scoreboard.box '|', '-'
+        display_scores
+        @scoreboard.noutrefresh
+      end
+
       if @textbox_changed
         @textbox.clear
         @textbox.box '|', '-'
@@ -179,13 +186,6 @@ module TypingHero
         @textbox.refresh
 
         @textbox_changed = false
-      end
-
-      if @scores_changed
-        @scoreboard.clear
-        @scoreboard.box '|', '-'
-        display_scores
-        @scoreboard.noutrefresh
       end
     end
 
@@ -215,7 +215,7 @@ module TypingHero
       @scores.each_with_index do |val, i|
         name, player = val
         @scoreboard.setpos i+1, 2
-        @scoreboard << sprintf("%#{@scoreboard_width - 9}s %4d", name, player.score)
+        @scoreboard << sprintf("%-#{@scoreboard_width - 9}s %4d", name, player.score)
       end
     end
   end
