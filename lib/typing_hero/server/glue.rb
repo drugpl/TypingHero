@@ -17,7 +17,7 @@ module TypingHero
           @time_adapter.start
           @net_adapter.run
         end
-        after(@typing_hero, [:time_unit_elapsed, :new_player_joined, :player_correctly_entered_word]) do
+        after(@typing_hero, [:time_unit_elapsed, :new_player_joined, :player_correctly_entered_word, :player_was_punished]) do
           @net_adapter.send_world(@typing_hero.visible_words, @typing_hero.players)
         end
 

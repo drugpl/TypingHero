@@ -34,6 +34,8 @@ module TypingHero
           word_correct(json['word'])
         when 'word_incorrect'
           word_incorrect
+        when 'punishment'
+          got_punished(json['penalty'])
         end
       end
 
@@ -48,6 +50,9 @@ module TypingHero
       end
 
       def word_incorrect
+      end
+
+      def got_punished(penalty)
       end
     end
   end

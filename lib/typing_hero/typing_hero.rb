@@ -25,6 +25,11 @@ module TypingHero
       if @units_elapsed % 15 == 0 && visible_words.size < 10 && available_words.any?
         visible_words << available_words.shift
       end
+
+      if visible_words.any? { |word| word.position > 1 }
+        punish_players
+        visible_words.delete_if { |word| word.position > 1 }
+      end
     end
 
     def player_entered_word(player, word)
@@ -43,6 +48,17 @@ module TypingHero
     end
 
     def player_incorrectly_entered_word(player)
+    end
+
+    def player_was_punished(player, score)
+    end
+
+    def punish_players
+      points = visible_words.reduce(0) { |mem, word| word.position > 1 ? mem -= word.content.length : mem }
+      @players.each do |player|
+        player.add_points(points)
+        player_was_punished(player, points)
+      end
     end
 
     def last_player

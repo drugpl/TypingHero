@@ -118,17 +118,17 @@ module TypingHero
     end
 
     def setup_windows
-      @stage_width = cols
-      @stage_height = lines - 3
       @scoreboard_width = 22
+      @stage_width = cols - @scoreboard_width
+      @stage_height = lines - 3
 
       @stage = Window.new @stage_height, @stage_width, 0, 0
       @stage.timeout = 0
 
-      @scoreboard = Window.new @stage_height, @scoreboard_width, 0, @stage_width - @scoreboard_width
+      @scoreboard = Window.new @stage_height, @scoreboard_width, 0, @stage_width
       @scoreboard.timeout = 0
 
-      @textbox = Window.new 3, @stage_width, @stage_height, 0
+      @textbox = Window.new 3, @stage_width + @scoreboard_width, @stage_height, 0
       @textbox.timeout = 0
 
       notify_textbox
@@ -180,7 +180,7 @@ module TypingHero
         @textbox.setpos 1, 3
         @textbox << @current_text
 
-        @textbox.setpos 1, @stage_width - 9
+        @textbox.setpos 1, @stage_width + @scoreboard_width - 9
         @textbox << sprintf('| %5d', @score)
 
         @textbox.refresh
