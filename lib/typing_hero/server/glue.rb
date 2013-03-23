@@ -18,16 +18,18 @@ module TypingHero
           @net_adapter.run
         end
         after(@typing_hero, [:time_unit_elapsed, :new_player_joined, :player_correctly_entered_word]) do
-          @net_adapter.send_world(@typing_hero.visible_words, @players)
+          @net_adapter.send_world(@typing_hero.visible_words, @typing_hero.players)
         end
 
         after(@typing_hero, :player_correctly_entered_word) do |_, _, player, word|
-          @players_handlers[players_handlers].inform_about_correct_word(word)
+          get_client(player).inform_about_correct_word(word)
         end
 
         after(@time_adapter, :tick) { @typing_hero.time_unit_elapsed }
 
-        after(@net_adapter, :word_received) { |_, _, word| @typing_hero.player_entered_word(@player, word) }
+        after(@net_adapter, :word_received) do |_, _, client, word|
+          @typing_hero.player_entered_word(get_player(client), word)
+        end
         after(@net_adapter, :client_connected) do |_, _, handler|
           @typing_hero.new_player_joined("Player #{rand(10)}")
           @players_handlers[@typing_hero.last_player] = handler
@@ -45,6 +47,16 @@ module TypingHero
         Aspect.new :after, methods: Array(methods), for_objects: [object] do |*args|
           block.call(args)
         end
+      end
+
+      def get_player(client)
+        puts "GET PLAYER #{client}"
+        puts @players_handlers.invert.inspect
+        @players_handlers.invert[client]
+      end
+
+      def get_client(player)
+        @players_handlers[player]
       end
 
     end

@@ -36,7 +36,7 @@ module TypingHero
     end
 
     def last_player
-      @player.last
+      @players.last
     end
 
   end

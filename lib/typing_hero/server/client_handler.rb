@@ -12,7 +12,7 @@ module TypingHero
           loop do
             word_in_json = @socket.gets
             word = JSON.parse(word_in_json)["word"]
-            net_adapter.word_received(word)
+            net_adapter.word_received(self, word)
           end
         end
       end
