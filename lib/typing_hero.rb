@@ -7,8 +7,9 @@ require "typing_hero/player"
 require "typing_hero/time_adapter"
 require "typing_hero/net_server_adapter"
 require "typing_hero/typing_hero"
-require "typing_hero/glue"
-require "typing_hero/app"
+require "typing_hero/client"
 
 module TypingHero
 end
+
+Thread.abort_on_exception = true

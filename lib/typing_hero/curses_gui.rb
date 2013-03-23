@@ -173,7 +173,7 @@ module TypingHero
     ##################################################
 
     def vertical_position_for(word)
-      @positions[word] ||= rand(@stage_height)
+      @positions[word.content] ||= rand(@stage_height)
     end
 
     def horizontal_position_for(word)
@@ -181,7 +181,7 @@ module TypingHero
     end
 
     def color_for(word)
-      @colors[word] ||= COLORS.sample
+      @colors[word.content] ||= COLORS.sample
     end
 
     def arrange_words

@@ -3,9 +3,9 @@ module TypingHero
 
     attr_reader :name, :score
 
-    def initialize(name = "Anonymous")
+    def initialize(name = "Anonymous", score = 0)
       @name = name
-      @score = 0
+      @score = score
     end
 
     def add_points(points)
