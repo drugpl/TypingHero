@@ -8,6 +8,7 @@ module TypingHero
       @current_text = ""
       @positions = {}
       @words = WordCollection.new
+      @score = 0
 
       setup_curses
       setup_windows
@@ -15,6 +16,10 @@ module TypingHero
 
     def update_words(words)
       @words = words
+    end
+
+    def update_score(score)
+      @score = score
     end
 
     def word_entered(word)
@@ -93,8 +98,13 @@ module TypingHero
 
       @textbox.clear
       @textbox.box '|', '-'
+
       @textbox.setpos 1, 2
       @textbox << @current_text
+
+      @textbox.setpos 1, @stage_width - 9
+      @textbox << sprintf('| %5d', @score)
+
       @textbox.refresh
     end
 
