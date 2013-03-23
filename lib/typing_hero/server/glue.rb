@@ -30,8 +30,8 @@ module TypingHero
         after(@net_adapter, :word_received) do |_, _, client, word|
           @typing_hero.player_entered_word(get_player(client), word)
         end
-        after(@net_adapter, :client_connected) do |_, _, handler|
-          @typing_hero.new_player_joined("Player #{rand(10)}")
+        after(@net_adapter, :client_connected) do |_, _, name, handler|
+          @typing_hero.new_player_joined(name)
           @players_handlers[@typing_hero.last_player] = handler
         end
       end
@@ -50,8 +50,6 @@ module TypingHero
       end
 
       def get_player(client)
-        puts "GET PLAYER #{client}"
-        puts @players_handlers.invert.inspect
         @players_handlers.invert[client]
       end
 

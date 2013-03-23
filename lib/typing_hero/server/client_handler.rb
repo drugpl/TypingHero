@@ -7,6 +7,11 @@ module TypingHero
         @socket = socket
       end
 
+      def get_name
+        name_in_json = @socket.gets
+        JSON.parse(name_in_json)["player"]
+      end
+
       def listen(net_adapter)
         Thread.new do
           loop do
