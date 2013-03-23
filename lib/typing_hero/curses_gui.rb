@@ -4,10 +4,17 @@ module TypingHero
   class CursesGui
     include Curses
 
+    COLORS = [
+      COLOR_BLACK, COLOR_BLUE, COLOR_CYAN, COLOR_GREEN,
+      COLOR_MAGENTA, COLOR_RED, COLOR_WHITE, COLOR_YELLOW
+    ]
+
     def initialize
       @current_text = ""
       @positions = {}
+      @colors = {}
       @words = WordCollection.new
+      @score = 0
 
       setup_curses
       setup_windows
@@ -15,6 +22,10 @@ module TypingHero
 
     def update_words(words)
       @words = words
+    end
+
+    def update_score(score)
+      @score = score
     end
 
     def word_entered(word)
@@ -51,6 +62,13 @@ module TypingHero
       noecho
       stdscr.nodelay = 1
       curs_set(0)
+
+      [
+        COLOR_WHITE, COLOR_RED, COLOR_BLUE, COLOR_GREEN, COLOR_CYAN,
+        COLOR_MAGENTA, COLOR_YELLOW
+      ].each do |color|
+        init_pair(color, color, COLOR_BLACK)
+      end
     end
 
     def setup_windows
@@ -93,8 +111,13 @@ module TypingHero
 
       @textbox.clear
       @textbox.box '|', '-'
+
       @textbox.setpos 1, 2
       @textbox << @current_text
+
+      @textbox.setpos 1, @stage_width - 9
+      @textbox << sprintf('| %5d', @score)
+
       @textbox.refresh
     end
 
@@ -113,9 +136,14 @@ module TypingHero
       word.position * (@stage_width - word.content.length)
     end
 
+    def color_for(word)
+      @colors[word] ||= COLORS.sample
+    end
+
     def arrange_words
       @words.each do |word|
         @stage.setpos vertical_position_for(word), horizontal_position_for(word)
+        @stage.color_set color_for(word)
         @stage << word.content
       end
     end
