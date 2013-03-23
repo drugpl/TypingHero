@@ -1,3 +1,5 @@
 require 'typing_hero'
 
-TypingHero::App.new
+speed = (ARGV[0] || 1).to_f
+
+TypingHero::App.new(speed)
