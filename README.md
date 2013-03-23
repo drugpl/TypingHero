@@ -1,20 +1,23 @@
 # TypingHero
 
-TODO: Write a gem description
+Multiplayer touch-typing game
 
 ## Installation
 
-Add this line to your application's Gemfile:
+   git clone git@github.com:drugpl/TypingHero.git
+   bundle
 
-    gem 'typing_hero'
 
-And then execute:
+## Running server
 
-    $ bundle
+One of the players has to run server
 
-Or install it yourself as:
+   ruby bin/server.rb
 
-    $ gem install typing_hero
+## Running clients
+
+  ruby bin/game USERNAME server_ip
+
 
 ## Usage
 
