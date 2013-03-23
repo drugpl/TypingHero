@@ -15,5 +15,9 @@ module TypingHero
       @position += 0.01
     end
 
+    def size
+      @content.size
+    end
+
   end
 end

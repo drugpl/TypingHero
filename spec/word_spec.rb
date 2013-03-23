@@ -6,6 +6,7 @@ describe TypingHero::Word do
 
   its(:position) { should == 0 }
   its(:content) { should == "hello" }
+  its(:size) { should == 5 }
 
   it "increases position" do
     expect {

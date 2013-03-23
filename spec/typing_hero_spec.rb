@@ -27,7 +27,7 @@ describe TypingHero::TypingHero do
     it "should add points" do
       expect {
         subject.player_entered_word(player, "dude")
-      }.to change{player.score}.by(1)
+      }.to change{player.score}.by("dude".size)
     end
 
     it "should draw next word" do

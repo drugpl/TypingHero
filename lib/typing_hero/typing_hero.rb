@@ -32,7 +32,7 @@ module TypingHero
     def player_correctly_entered_word(player, word)
       visible_words.delete(word)
       visible_words << available_words.shift
-      player.add_points(1)
+      player.add_points(word.size)
     end
 
     def last_player
