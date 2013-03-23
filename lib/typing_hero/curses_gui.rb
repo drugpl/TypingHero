@@ -6,20 +6,27 @@ module TypingHero
 
     def initialize
       @current_text = ""
+      @words = WordCollection.new
 
       setup_curses
-      setup_textbox
+      setup_windows
+    end
+
+    def update_words(words)
+      @words = words
     end
 
     def tick
       handle_input
-
-      display_textbox
+      display_windows
     end
 
     def run!
       begin
         loop do
+          # Stop on ^C
+          trap('INT') { raise StopIteration }
+
           tick
           sleep 0.04
         end
@@ -39,8 +46,13 @@ module TypingHero
       curs_set(0)
     end
 
-    def setup_textbox
-      @textbox = Window.new 3, cols, lines - 3, 0
+    def setup_windows
+      @stage_height = lines - 3
+
+      @stage = Window.new @stage_height, cols, 0, 0
+      @stage.timeout = 0
+
+      @textbox = Window.new 3, cols, @stage_height, 0
       @textbox.timeout = 0
     end
 
@@ -50,24 +62,42 @@ module TypingHero
       if char.is_a?(String)
         case char
         when '['
-          # Ignore the next charactor
-          @textbox.getch
+          # Ignore the next characters
+          @textbox.getstr
         else @current_text << char
         end
       else
         case char
+        when 10 # enter
+          # TODO: confirm
         when 127 # backspace
-          # @current_text = @current_text[0..-2]
+          @current_text = @current_text[0..-2]
         end
       end
     end
 
-    def display_textbox
+    def display_windows
+      @stage.clear
+      arrange_words
+      @stage.refresh
+
       @textbox.clear
       @textbox.box '|', '-'
       @textbox.setpos 1, 2
       @textbox << @current_text
       @textbox.refresh
+    end
+
+    def position_for(word)
+      @positions ||= {}
+      @positions[word] ||= rand(@stage_height)
+    end
+
+    def arrange_words
+      @words.each do |word|
+        @stage.setpos position_for(word), word.x
+        @stage << word.content
+      end
     end
   end
 end
