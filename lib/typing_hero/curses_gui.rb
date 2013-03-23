@@ -180,8 +180,8 @@ module TypingHero
         @textbox.setpos 1, 3
         @textbox << @current_text
 
-        @textbox.setpos 1, @stage_width - 8
-        @textbox << sprintf('| %4d', @score)
+        @textbox.setpos 1, @stage_width - 9
+        @textbox << sprintf('| %5d', @score)
 
         @textbox.refresh
 
@@ -215,7 +215,7 @@ module TypingHero
       @scores.each_with_index do |val, i|
         name, player = val
         @scoreboard.setpos i+1, 2
-        @scoreboard << sprintf("%-#{@scoreboard_width - 9}s %4d", name, player.score)
+        @scoreboard << sprintf("%-#{@scoreboard_width - 10}s %5d", name, player.score)
       end
     end
   end

@@ -24,6 +24,9 @@ module TypingHero
         after(@typing_hero, :player_correctly_entered_word) do |_, _, player, word|
           get_client(player).inform_about_correct_word(word)
         end
+        after(@typing_hero, :player_incorrectly_entered_word) do |_, _, player|
+          get_client(player).inform_about_incorrect_word
+        end
 
         after(@time_adapter, :tick) { @typing_hero.time_unit_elapsed }
 
