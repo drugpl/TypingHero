@@ -6,13 +6,13 @@ module TypingHero
     class NetAdapter
       def initialize(host, port)
         @socket = TCPSocket.new(host, port)
-        start
       end
 
       def start
       end
 
       def run
+        start
         Thread.new do
           while line = @socket.gets
             process_message(line)
