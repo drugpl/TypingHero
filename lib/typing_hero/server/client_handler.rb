@@ -36,6 +36,14 @@ module TypingHero
         )
       end
 
+      def inform_about_incorrect_word
+        @socket.puts(
+          {
+            :type => "word_incorrect"
+          }.to_json
+        )
+      end
+
       def build_world(words, players)
         mapped_words = words.map do |word|
           {

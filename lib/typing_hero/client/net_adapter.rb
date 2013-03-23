@@ -32,6 +32,8 @@ module TypingHero
           })
         when 'word_correct'
           word_correct(json['word'])
+        when 'word_incorrect'
+          word_incorrect
         end
       end
 
@@ -43,6 +45,9 @@ module TypingHero
       end
 
       def word_correct(word)
+      end
+
+      def word_incorrect
       end
     end
   end

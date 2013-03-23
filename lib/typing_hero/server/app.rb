@@ -14,7 +14,7 @@ module TypingHero
       def initialize(host = "localhost", port = 3100)
         typing_hero = TypingHero.new(WORDS.map { |word| Word.new(word) })
         time_adapter = TimeAdapter.new(1)
-        net_adapter = NetAdapter.new("0.0.0.0", 3100)
+        net_adapter = NetAdapter.new(host, port)
         glue = Glue.new(typing_hero, time_adapter, net_adapter)
 
         glue.apply

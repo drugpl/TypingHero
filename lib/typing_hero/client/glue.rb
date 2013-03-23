@@ -21,9 +21,11 @@ module TypingHero
           @gui.update_scores(message[:players])
           @gui.update_score(message[:players][@player.name].score)
         end
-
         after(@net_adapter, :word_correct) do |_, _, word|
           @gui.word_correct(word)
+        end
+        after(@net_adapter, :word_incorrect) do
+          @gui.word_incorrect
         end
 
         after(@gui, :word_entered) do |_, _, word|
